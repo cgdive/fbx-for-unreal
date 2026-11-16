@@ -1,0 +1,48 @@
+# Push a tag like v1.0.1 (matching the version in blender_manifest.toml) to build both
+# zips and publish them as a GitHub release. Asset names have no version number, so the
+# README's .../releases/latest/download/... links always point to the newest release.
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Check tag matches manifest version
+        run: |
+          VERSION=$(python -c "import tomllib;print(tomllib.load(open('unreal_fbx_export/blender_manifest.toml','rb'))['version'])")
+          [ "v$VERSION" = "$GITHUB_REF_NAME" ] || { echo "Tag $GITHUB_REF_NAME does not match manifest version $VERSION"; exit 1; }
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+
+      - name: Build
+        run: |
+          python build.py
+          cp "dist/unreal_fbx_export-$VERSION.zip" dist/unreal_fbx_export.zip
+          cp "dist/unreal_fbx_export-$VERSION-legacy-4.0-4.1.zip" dist/unreal_fbx_export-legacy-4.0-4.1.zip
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cat > notes.md <<NOTES
+          ## Download
+
+          - **Blender 4.2 and newer:** \`unreal_fbx_export.zip\` — drag it into Blender, or *Preferences > Get Extensions > Install from Disk*.
+          - **Blender 4.0 / 4.1:** \`unreal_fbx_export-legacy-4.0-4.1.zip\` — *Preferences > Add-ons > Install*, then enable *FBX for Unreal*.
+
+          Don't unzip the files; install the zip as it is.
+          NOTES
+          gh release create "$GITHUB_REF_NAME" --title "FBX for Unreal $VERSION" --notes-file notes.md \
+            dist/unreal_fbx_export.zip dist/unreal_fbx_export-legacy-4.0-4.1.zip
