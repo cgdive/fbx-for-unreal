@@ -6,6 +6,7 @@ name = "FBX for Unreal"
 tagline = "Export FBX that imports into Unreal Engine at the correct scale"
 maintainer = "CGDive"
 type = "add-on"
+website = "https://github.com/cgdive/fbx-for-unreal"
 
 tags = ["Import-Export", "Game Engine"]
 
