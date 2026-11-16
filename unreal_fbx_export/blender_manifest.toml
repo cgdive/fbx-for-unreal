@@ -1,0 +1,24 @@
+schema_version = "1.0.0"
+
+id = "unreal_fbx_export"
+version = "1.0.0"
+name = "FBX for Unreal"
+tagline = "Export FBX that imports into Unreal Engine at the correct scale"
+maintainer = "CGDive"
+type = "add-on"
+
+tags = ["Import-Export", "Game Engine"]
+
+blender_version_min = "4.2.0"
+
+license = ["SPDX:GPL-3.0-or-later"]
+copyright = [
+  "2026 CGDive",
+  "2013 Campbell Barton",
+  "2014 Bastien Montagne",
+  "2020-2024 Epic Games, Inc.",
+  "2024-2026 Send to Unreal community fork contributors",
+]
+
+[permissions]
+files = "Write FBX files chosen by the user"

@@ -1,0 +1,8 @@
+# Upstream Send to Unreal source (reference only; not part of this project)
+send2ue/
+# Build output and local test data
+dist/
+tests/.out/
+tests/blender_root.txt
+__pycache__/
+*.pyc
