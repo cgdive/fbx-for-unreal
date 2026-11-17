@@ -48,7 +48,7 @@ armature object's scale. During export, this add-on temporarily replaces four
 functions of Blender's own exporter (`io_scene_fbx.export_fbx_bin`) so that:
 
 - the armature node is written with scale 1 (and the 100× goes into the bone
-  translations and animation instead),
+  rest positions and animation instead),
 - the bind pose and skin cluster matrices are rescaled to match,
 - the root object's animated scale is divided by 100, and bone translation keys
   are multiplied by 100.
@@ -60,6 +60,9 @@ normal FBX exporter is unaffected.
 
 The scale code (`send2ue/core/io/fbx_b4.py`) is carried over as-is, except:
 
+- Bone rest positions are written in centimeters. Send to Unreal left them in
+  meters, which only worked because it always exported animation: with
+  *Animation* turned off, the skeletal mesh came out distorted in Unreal.
 - Fixed a crash on **Blender 5.1+** when exporting animation with shape keys
   (Blender added a fifth item to an internal tuple).
 - Fixed a missing `ObjectWrapper` import (crash with animated instances).
@@ -81,9 +84,8 @@ stock `export_fbx_bin.py` (`fbx_animations_do`, `fbx_data_armature_elements`,
 5.8.13–5.15.0). On 4.0 the export options are shown as plain boxes instead of
 collapsible panels.
 
-Files exported this way are meant for Unreal. Re-importing them into Blender
-gives a tiny skeleton, because Blender and Unreal read different parts of the
-file (Send to Unreal's files behave the same way).
+Files exported this way are meant for Unreal. Re-imported into Blender they
+come in at 0.01 scale, as FBX files in centimeters usually do.
 
 ## Building
 

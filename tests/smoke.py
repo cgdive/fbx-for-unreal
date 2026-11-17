@@ -84,10 +84,23 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from fbxread import tree, models, anim_curves, poses, col_scale, diff
 
 
-# ---- send2ue reference exporter (its own fbx_b4.py, unmodified apart from the relative import) ------
+# ---- send2ue reference exporter (its own fbx_b4.py; only the relative import and BONE_FIX changed) ---
+# Our one intended difference from send2ue: bone rest offsets are written in cm (send2ue left them in
+# meters, which breaks exports with Animation off). The reference gets the same one-line change.
+BONE_FIX = ("        elif ob_obj.type == 'Ellipsis':",
+            "        elif ob_obj.is_bone:" + chr(10) + "            loc = loc * SCALE_FACTOR" + chr(10)
+            + "        elif ob_obj.type == 'Ellipsis':")
+
+
+def send2ue_source():
+    src = open(S2U_FILE, encoding="utf-8").read()
+    assert BONE_FIX[0] in src, "send2ue fbx_b4.py changed; update BONE_FIX"
+    return src.replace("from ..utilities import report_error",
+                       "def report_error(*a, **k): print('S2U REPORT', a)").replace(*BONE_FIX)
+
+
 def load_send2ue():
-    src = open(S2U_FILE, encoding="utf-8").read().replace(
-        "from ..utilities import report_error", "def report_error(*a, **k): print('S2U REPORT', a)")
+    src = send2ue_source()
     m = types.ModuleType("s2u_fbx_b4"); exec(compile(src, S2U_FILE, "exec"), m.__dict__)
 
     class S2UProps(bpy.types.PropertyGroup):
@@ -118,8 +131,7 @@ def compare_with_send2ue(s2u, case, objs, active, ours, ref):
         check(f"{case}_identical_to_send2ue", not d, "; ".join(d[:6]))
     except Exception as ex:
         check(f"{case}_send2ue_reference_crashes(expected on 5.1+)", True, f"{type(ex).__name__}: {ex}")
-        src = open(S2U_FILE, encoding="utf-8").read().replace(
-            "from ..utilities import report_error", "def report_error(*a, **k): print('S2U REPORT', a)").replace(
+        src = send2ue_source().replace(
             "(channel_key, geom_key, _shape_verts_co, _shape_verts_idx)", "(channel_key, geom_key, *_unused)")
         m2 = types.ModuleType("s2u_fixed"); exec(compile(src, S2U_FILE, "exec"), m2.__dict__)
         select(objs, active)
@@ -192,6 +204,16 @@ try:
                   {b: col_scale(P[b]) for b in ("Root", "Child")})
             check("bindpose_bone_translation_cm", abs(P["Child"][14] - 100) < 0.01 or abs(P["Child"][13] - 100) < 0.01,
                   P["Child"][12:15])
+            # Animation off (common for a mesh-only export): no curves, so Unreal builds the skeleton from the
+            # bone nodes' rest values, which must be in cm like the bind pose.
+            p = os.path.join(OUT, "skeletal_no_anim.fbx"); select(objs, active)
+            bpy.ops.unreal_fbx_export.export_fbx(filepath=p, bake_anim=False)
+            t3 = tree(p); rest = models(t3)["Child"]["props"].get("Lcl Translation", [0, 0, 0])
+            check("no_anim_bone_rest_translation_cm", not anim_curves(t3) and abs(max(rest, key=abs) - 100) < 0.01,
+                  rest)
+            check("bone_rest_translation_cm_with_anim",
+                  abs(max(M["Child"]["props"].get("Lcl Translation", [0]), key=abs) - 100) < 0.01,
+                  M["Child"]["props"].get("Lcl Translation"))
             shape = [v for k, v in curves.items() if "Bulge" in k[0] or "DeformPercent" in k[1]]
         else:
             sc = M["SM_Cube"]["props"].get("Lcl Scaling"); tr = M["SM_Cube"]["props"].get("Lcl Translation")

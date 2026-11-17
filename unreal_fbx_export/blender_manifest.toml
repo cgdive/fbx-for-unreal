@@ -1,7 +1,7 @@
 schema_version = "1.0.0"
 
 id = "unreal_fbx_export"
-version = "1.0.0"
+version = "1.0.1"
 name = "FBX for Unreal"
 tagline = "Export FBX that imports into Unreal Engine at the correct scale"
 maintainer = "CGDive"

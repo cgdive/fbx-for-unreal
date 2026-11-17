@@ -480,6 +480,13 @@ def export(operator, options, **keywords):
             if options.use_object_origin:
                 loc = Vector((0, 0, 0))
 
+        # unreal_fbx_export: the armature node no longer carries the x100 unit scale, so bone rest offsets
+        # must be in cm too, like the bind pose and the baked bone animation already are. send2ue left them
+        # in meters; that only worked because send2ue always baked animation, whose keys override these
+        # values. With Animation off, Unreal built the skeleton from these values (bones 100x too close).
+        elif ob_obj.is_bone:
+            loc = loc * SCALE_FACTOR
+
         # unreal_fbx_export: send2ue had an `elif ob_obj.type == 'Ellipsis':` branch here. For bones
         # ObjectWrapper.type is the Ellipsis object (...), never the string 'Ellipsis', so it never ran. Removed.
         elif ob_obj.type == 'MESH':
