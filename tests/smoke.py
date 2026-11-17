@@ -10,6 +10,8 @@ import bpy, addon_utils
 
 argv = sys.argv[sys.argv.index("--") + 1:]
 S2U_FILE, OUT = argv[0], argv[1]
+if S2U_FILE and bpy.app.version < (4, 0, 0):  # send2ue's Blender 3 exporter is a separate file
+    S2U_FILE = os.path.join(os.path.dirname(S2U_FILE), "fbx_b3.py")
 os.makedirs(OUT, exist_ok=True)
 R = {"version": bpy.app.version_string, "checks": {}, "errors": []}
 
@@ -95,6 +97,9 @@ BONE_FIX = ("        elif ob_obj.type == 'Ellipsis':",
 def send2ue_source():
     src = open(S2U_FILE, encoding="utf-8").read()
     assert BONE_FIX[0] in src, "send2ue fbx_b4.py changed; update BONE_FIX"
+    # fbx_b3.py (Blender 3) wrote shape-key keys as value * <leftover loop variable>; FBX wants value * 100,
+    # which is what Blender, send2ue's fbx_b4.py and this add-on write.
+    src = src.replace("(shape.value * scale_factor,)", "(shape.value * 100.0,)")
     return src.replace("from ..utilities import report_error",
                        "def report_error(*a, **k): print('S2U REPORT', a)").replace(*BONE_FIX)
 

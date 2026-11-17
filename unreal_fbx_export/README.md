@@ -1,6 +1,6 @@
 # FBX for Unreal
 
-A small Blender add-on (Blender 4.0 and newer) that exports FBX files that import into
+A small Blender add-on (Blender 3.6 and newer) that exports FBX files that import into
 Unreal Engine at the right scale — no `0.01` / `100` armature scale, no extra
 scaled root, bones and animation in centimeters.
 
@@ -12,7 +12,7 @@ usual, so it doesn't depend on the Unreal version.
 
 - **Blender 4.2 and newer:** drag `unreal_fbx_export-<version>.zip` into
   Blender, or use *Preferences > Get Extensions > Install from Disk*.
-- **Blender 4.0 / 4.1:** use `unreal_fbx_export-<version>-legacy-4.0-4.1.zip`
+- **Blender 3.6 / 4.0 / 4.1:** use `unreal_fbx_export-<version>-legacy-3.6-4.1.zip`
   with *Preferences > Add-ons > Install*, then enable *FBX for Unreal*.
 
 ## Use
@@ -80,8 +80,10 @@ The patched functions are copies of Blender's FBX exporter functions. If a
 future Blender changes those functions, re-run the comparison against the
 stock `export_fbx_bin.py` (`fbx_animations_do`, `fbx_data_armature_elements`,
 `fbx_data_object_elements`, `fbx_data_bindpose_element`). Tested on Blender
-4.0, 4.1, 4.2, 4.3, 4.4, 4.5, 5.0, 5.1, 5.2 and 5.3 (exporter versions
-5.8.13–5.15.0). On 4.0 the export options are shown as plain boxes instead of
+3.6, 4.0, 4.1, 4.2, 4.3, 4.4, 4.5, 5.0, 5.1, 5.2 and 5.3 (exporter versions
+5.4.1–5.15.0). Blender 3.6 has an older `fbx_animations_do`, so the add-on
+carries a separate 3.6 copy of it (`fbx_animations_do_36`). On 3.6 and 4.0 the
+export options are shown as plain boxes instead of
 collapsible panels.
 
 Files exported this way are meant for Unreal. Re-imported into Blender they

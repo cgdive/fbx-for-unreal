@@ -1,6 +1,6 @@
 # FBX for Unreal
 
-A Blender add-on (Blender 4.0+) that exports FBX files that import into Unreal
+A Blender add-on (Blender 3.6+) that exports FBX files that import into Unreal
 Engine at the right scale. It is the Blender→Unreal scale fix from the
 [Send to Unreal](https://github.com/poly-hammer/BlenderTools) add-on as a plain
 FBX exporter, without the live connection to Unreal.
@@ -10,7 +10,7 @@ FBX exporter, without the live connection to Unreal.
 | Blender | File | How to install |
 |---|---|---|
 | **4.2 and newer** | [**unreal_fbx_export.zip**](https://github.com/cgdive/fbx-for-unreal/releases/latest/download/unreal_fbx_export.zip) | Drag the zip into Blender, or *Preferences > Get Extensions > Install from Disk* |
-| **4.0 / 4.1** (legacy) | [**unreal_fbx_export-legacy-4.0-4.1.zip**](https://github.com/cgdive/fbx-for-unreal/releases/latest/download/unreal_fbx_export-legacy-4.0-4.1.zip) | *Preferences > Add-ons > Install*, then enable *FBX for Unreal* |
+| **3.6 / 4.0 / 4.1** (legacy) | [**unreal_fbx_export-legacy-3.6-4.1.zip**](https://github.com/cgdive/fbx-for-unreal/releases/latest/download/unreal_fbx_export-legacy-3.6-4.1.zip) | *Preferences > Add-ons > Install*, then enable *FBX for Unreal* |
 
 Don't unzip the files; install the zip as it is. Older versions and release
 notes: [Releases](https://github.com/cgdive/fbx-for-unreal/releases).

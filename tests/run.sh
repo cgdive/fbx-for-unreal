@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Install the built add-on into each Blender (fresh, isolated user folder) and run smoke.py.
 #
-#   bash tests/run.sh 4.0 4.2 5.3          # version prefixes
+#   bash tests/run.sh 3.6 4.2 5.3          # version prefixes
 #
 # Blender builds are looked up as <root>/blender-<version>*/blender.exe (Blender Launcher layout),
 # where <root> comes from $BLENDER_ROOT or the first line of tests/blender_root.txt (git-ignored).
@@ -21,7 +21,7 @@ winpath() { if command -v cygpath >/dev/null; then cygpath -w "$1"; else echo "$
 VERSION=$(cd "$PROJ" && python -I -c "import tomllib;print(tomllib.load(open('unreal_fbx_export/blender_manifest.toml','rb'))['version'])") \
     || { echo "could not read the version from blender_manifest.toml"; exit 1; }
 ZIP="$PROJ/dist/unreal_fbx_export-$VERSION.zip"
-LEGACY="$PROJ/dist/unreal_fbx_export-$VERSION-legacy-4.0-4.1.zip"
+LEGACY="$PROJ/dist/unreal_fbx_export-$VERSION-legacy-3.6-4.1.zip"
 WORK="$HERE/.out"; mkdir -p "$WORK"
 STATUS=0
 
@@ -31,7 +31,7 @@ for v in "$@"; do
   U="$WORK/user_$v"; OUT="$WORK/out_$v"; rm -rf "$U" "$OUT"; mkdir -p "$U"
   export BLENDER_USER_RESOURCES="$(winpath "$U")"
   case "$v" in
-    4.0*|4.1*)
+    3.*|4.0*|4.1*)
       mkdir -p "$U/scripts/addons"
       python -I -c "import zipfile,sys;zipfile.ZipFile(sys.argv[1]).extractall(sys.argv[2])" "$LEGACY" "$U/scripts/addons"
       export BLENDER_USER_SCRIPTS="$(winpath "$U/scripts")"

@@ -3,7 +3,7 @@
     python build.py
 
 - unreal_fbx_export-<version>.zip                 Blender 4.2+ extension (install via drag & drop / Install from Disk)
-- unreal_fbx_export-<version>-legacy-4.0-4.1.zip  Blender 4.0 / 4.1 legacy add-on (Preferences > Add-ons > Install)
+- unreal_fbx_export-<version>-legacy-3.6-4.1.zip  Blender 3.6 / 4.0 / 4.1 legacy add-on (Preferences > Add-ons > Install)
 
 The legacy zip puts the files in a unreal_fbx_export/ folder and prepends a bl_info dict to
 __init__.py inside the zip only, so the source stays a valid extension.
@@ -24,12 +24,12 @@ def bl_info(manifest):
         "name": manifest["name"],
         "author": manifest["maintainer"],
         "version": tuple(int(x) for x in manifest["version"].split(".")),
-        "blender": (4, 0, 0),
+        "blender": (3, 6, 0),
         "location": "File > Export > FBX for Unreal (.fbx)",
         "description": manifest["tagline"],
         "category": "Import-Export",
     }
-    lines = ["# Legacy add-on header for Blender 4.0/4.1 (added by build.py;",
+    lines = ["# Legacy add-on header for Blender 3.6-4.1 (added by build.py;",
              "# Blender 4.2+ installs this add-on as an extension instead).",
              "bl_info = {"]
     lines += [f"    {k!r}: {v!r}," for k, v in info.items()]
@@ -47,7 +47,7 @@ def main():
         for name in SHIP:
             z.write(os.path.join(PKG, name), name)
 
-    legacy = os.path.join(DIST, f"{pkg}-{version}-legacy-4.0-4.1.zip")
+    legacy = os.path.join(DIST, f"{pkg}-{version}-legacy-3.6-4.1.zip")
     with zipfile.ZipFile(legacy, "w", zipfile.ZIP_DEFLATED) as z:
         for name in SHIP:
             if name == "blender_manifest.toml":

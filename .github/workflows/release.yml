@@ -30,7 +30,7 @@ jobs:
         run: |
           python build.py
           cp "dist/unreal_fbx_export-$VERSION.zip" dist/unreal_fbx_export.zip
-          cp "dist/unreal_fbx_export-$VERSION-legacy-4.0-4.1.zip" dist/unreal_fbx_export-legacy-4.0-4.1.zip
+          cp "dist/unreal_fbx_export-$VERSION-legacy-3.6-4.1.zip" dist/unreal_fbx_export-legacy-3.6-4.1.zip
 
       - name: Publish release
         env:
@@ -40,9 +40,9 @@ jobs:
           ## Download
 
           - **Blender 4.2 and newer:** \`unreal_fbx_export.zip\` — drag it into Blender, or *Preferences > Get Extensions > Install from Disk*.
-          - **Blender 4.0 / 4.1:** \`unreal_fbx_export-legacy-4.0-4.1.zip\` — *Preferences > Add-ons > Install*, then enable *FBX for Unreal*.
+          - **Blender 3.6 / 4.0 / 4.1:** \`unreal_fbx_export-legacy-3.6-4.1.zip\` — *Preferences > Add-ons > Install*, then enable *FBX for Unreal*.
 
           Don't unzip the files; install the zip as it is.
           NOTES
           gh release create "$GITHUB_REF_NAME" --title "FBX for Unreal $VERSION" --notes-file notes.md \
-            dist/unreal_fbx_export.zip dist/unreal_fbx_export-legacy-4.0-4.1.zip
+            dist/unreal_fbx_export.zip dist/unreal_fbx_export-legacy-3.6-4.1.zip
