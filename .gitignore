@@ -6,3 +6,5 @@ tests/.out/
 tests/blender_root.txt
 __pycache__/
 *.pyc
+# Private notes for Claude Code
+CLAUDE.md
